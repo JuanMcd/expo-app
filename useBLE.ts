@@ -113,7 +113,7 @@ function useBLE() {
       }
     });
 
-  const onDataUpdate = (
+  const onDataUpdate = async (
     error: BleError | null,
     characteristic: Characteristic | null
   ) => {
@@ -124,6 +124,15 @@ function useBLE() {
       console.log("No Data was received");
       return;
     }
+
+    await fetch('https://dms.lat/api/postNewInfo', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(characteristic)
+    })
 
     const colorCode = base64.decode(characteristic.value);
 
