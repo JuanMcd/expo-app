@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -36,11 +37,28 @@ const App = () => {
     setIsModalVisible(true);
   };
 
+  const onSendInfoTesting = async () => {
+    const body = {
+      message: "This message is for test"
+    }
+    await fetch('https://dms.lat/api/servicesForTesting', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+  }
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: color }]}>
       <View style={styles.heartRateTitleWrapper}>
         {connectedDevice ? (
           <>
+            <Pressable style={styles.ctaButton} onPress={onSendInfoTesting}>
+              <Text>Test the services</Text>
+            </Pressable>
             <Text style={styles.heartRateTitleText}>Connected</Text>
           </>
         ) : (

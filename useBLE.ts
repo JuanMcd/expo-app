@@ -12,8 +12,8 @@ import {
   Device,
 } from "react-native-ble-plx";
 
-const DATA_SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
-const COLOR_CHARACTERISTIC_UUID = "19b10001-e8f2-537e-4f6c-d104768a1217";
+const UART_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E";
+const UUID_TX = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E";
 
 const bleManager = new BleManager();
 
@@ -81,11 +81,14 @@ function useBLE() {
   const connectToDevice = async (device: Device) => {
     try {
       const deviceConnection = await bleManager.connectToDevice(device.id);
-      setConnectedDevice(deviceConnection);
       await deviceConnection.discoverAllServicesAndCharacteristics();
-      bleManager.stopDeviceScan();
 
+      if (Platform.OS === "android"){
+        try {await deviceConnection.requestMTU(185); } catch{}
+      }
+      setConnectedDevice(deviceConnection);
       startStreamingData(deviceConnection);
+      bleManager.stopDeviceScan();
     } catch (e) {
       console.log("FAILED TO CONNECT", e);
     }
@@ -151,8 +154,8 @@ function useBLE() {
   const startStreamingData = async (device: Device) => {
     if (device) {
       device.monitorCharacteristicForService(
-        DATA_SERVICE_UUID,
-        COLOR_CHARACTERISTIC_UUID,
+        UART_SERVICE_UUID,
+        UUID_TX,
         onDataUpdate
       );
     } else {
