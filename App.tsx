@@ -63,7 +63,7 @@ const App = () => {
           </>
         ) : (
           <Text style={styles.heartRateTitleText}>
-            Please connect the Arduino
+            Please connect the AMB82-Mini
           </Text>
         )}
       </View>
